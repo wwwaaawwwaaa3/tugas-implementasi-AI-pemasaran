@@ -1,0 +1,326 @@
+{
+  "name": "Tugas 3_Nazwa Gita Naysilla_Pemasaran AI04",
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.kie.ai/v1/jobs/createTask",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.api_key }}"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"grok-imagine/image-to-video\",\n  \"input\": {\n    \"image_urls\": [\n      \"{{ $json.img_url.replace('file/d/', 'uc?export=view&id=').split('/view')[0] }}\"\n    ],\n    \"prompt\": \"{{$json.prompt}}\",\n    \"mode\": \"normal\",\n    \"duration\": \"6\",\n    \"resolution\": \"480p\"\n  }\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        208,
+        240
+      ],
+      "id": "9c2d161b-0968-4dc4-9155-dc2854881898",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "amount": 20
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        480,
+        0
+      ],
+      "id": "89cf4390-6049-4007-befa-9d0aaaaa6b69",
+      "name": "Wait",
+      "webhookId": "90cea7f5-8116-44b9-9d75-127f2ec55a14"
+    },
+    {
+      "parameters": {
+        "url": "https://api.kie.ai/api/v1/jobs/recordInfo",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "taskId",
+              "value": "={\n  \"taskId\": \"12345\"\n}"
+            }
+          ]
+        },
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "Application/json"
+            },
+            {
+              "name": "Authorization",
+              "value": "=Bearer {{ $json.api_key }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        608,
+        240
+      ],
+      "id": "86e9c35b-3f68-4176-9f30-26128d7b1809",
+      "name": "HTTP Request1"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "loose",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "8af9e861-c8d3-49e8-aa3a-c58cf776ecd4",
+              "leftValue": "success",
+              "rightValue": "={{ $json.status }}",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "looseTypeValidation": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        704,
+        0
+      ],
+      "id": "12daf1f7-da16-4b2f-a7cc-f172fc5bfd4f",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "jsCode": "return [\n  {\n    json: {\n      videoUrl: $json.data.result.video.url\n    }\n  }\n];\n"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        944,
+        -16
+      ],
+      "id": "a732163d-02b3-48a8-88e0-19702003409f",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "url": "=https://www.w3schools.com/html/mov_bbb.mp4",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1184,
+        -16
+      ],
+      "id": "0f6f67c1-52e1-4ad5-9a71-36ba5cecfbde",
+      "name": "HTTP Request2"
+    },
+    {
+      "parameters": {
+        "name": "Video Topik 3",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1hFZ7N7cPjudnyDIFGXCcelEF3uLQotRm",
+          "mode": "list",
+          "cachedResultName": "N8N TUGAS",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1hFZ7N7cPjudnyDIFGXCcelEF3uLQotRm"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        1376,
+        -16
+      ],
+      "id": "4e2337be-caa2-47ce-baf2-fbb0e3f390dd",
+      "name": "Upload file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "gFYtWatzRzysrQ2p",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "formTitle": "Generate Video Konten Otomatis",
+        "formDescription": "isi informasi dibawah ini untuk memulai proses generate video",
+        "formFields": {
+          "values": [
+            {
+              "fieldLabel": "prompt"
+            },
+            {
+              "fieldLabel": "img_url"
+            },
+            {
+              "fieldLabel": "task_type"
+            },
+            {
+              "fieldLabel": "api_key"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.formTrigger",
+      "typeVersion": 2.5,
+      "position": [
+        0,
+        0
+      ],
+      "id": "ed194483-b78c-425b-b26b-abbe0964187c",
+      "name": "On form submission",
+      "webhookId": "3e7eea9b-2368-450c-a3dc-24904222646f"
+    },
+    {
+      "parameters": {
+        "mode": "raw",
+        "jsonOutput": "{\n  \"taskId\": \"12345\",\n  \"status\": \"success\",\n  \"data\": {\n    \"result\": {\n      \"video\": {\n        \"url\": \"https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4\"\n      }\n    }\n  }\n}\n",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        208,
+        0
+      ],
+      "id": "4deec961-197f-48f1-bd62-4147487affea",
+      "name": "fields"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "HTTP Request": {
+      "main": [
+        []
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request1": {
+      "main": [
+        []
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request2": {
+      "main": [
+        [
+          {
+            "node": "Upload file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "On form submission": {
+      "main": [
+        [
+          {
+            "node": "fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "fields": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "30bb7485-f194-4287-a700-912b32284384",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "45f3c68741ebd8d61cd31f7b60028f923de681a6edb22f25ea63c0ae4d7c83de"
+  },
+  "id": "moZoB3o1Fs4gON8W",
+  "tags": []
+}
